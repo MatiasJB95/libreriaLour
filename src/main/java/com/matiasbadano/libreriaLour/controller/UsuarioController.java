@@ -1,5 +1,7 @@
 package com.matiasbadano.libreriaLour.controller;
 
+import com.matiasbadano.libreriaLour.domain.carrito.Carrito;
+import com.matiasbadano.libreriaLour.domain.libros.Libro;
 import com.matiasbadano.libreriaLour.domain.usuarios.Usuario;
 import com.matiasbadano.libreriaLour.domain.usuarios.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,8 @@ import java.util.Optional;
 public class UsuarioController {
     @Autowired
     private UsuarioRepository usuarioRepository;
+    @Autowired
+    private CarritoService carritoService;
 
     @GetMapping
     public ResponseEntity<List<Usuario>> obtenerTodosLosUsuarios() {
@@ -48,10 +52,9 @@ public class UsuarioController {
             usuario.setEmail(usuarioActualizado.getEmail());
             usuario.setPassword(usuarioActualizado.getPassword());
             usuario.setRoles(usuarioActualizado.getRoles());
-            // Actualizar otros campos según sea necesario
 
-            Usuario usuarioActualizado = usuarioRepository.save(usuario);
-            return new ResponseEntity<>(usuarioActualizado, HttpStatus.OK);
+            Usuario usuarioActualizadoU = usuarioRepository.save(usuario);
+            return new ResponseEntity<>(usuarioActualizadoU, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -67,4 +70,34 @@ public class UsuarioController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    @PostMapping("/{id}/carrito")
+    public ResponseEntity<Carrito> agregarLibroAlCarrito(@PathVariable("id") Long id, @RequestBody Libro libro) {
+        Optional<Usuario> optionalUsuario = usuarioRepository.findById(id);
+        if (optionalUsuario.isPresent()) {
+            Usuario usuario = optionalUsuario.get();
+            Carrito carrito = usuario.getCarrito();
+
+            Carrito carritoActualizado = carritoService.agregarLibroAlCarrito(carrito, libro);
+            return new ResponseEntity<>(carritoActualizado, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/{id}/carrito/{libroId}")
+    public ResponseEntity<Carrito> eliminarLibroDelCarrito(@PathVariable("id") Long id, @PathVariable("libroId") Long libroId) {
+        Optional<Usuario> optionalUsuario = usuarioRepository.findById(id);
+        if (optionalUsuario.isPresent()) {
+            Usuario usuario = optionalUsuario.get();
+            Carrito carrito = usuario.getCarrito();
+
+            Carrito carritoActualizado = carritoService.eliminarLibroDelCarrito(carrito, libroId);
+            return new ResponseEntity<>(carritoActualizado, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+
 }
+

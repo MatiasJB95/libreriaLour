@@ -1,7 +1,9 @@
 package com.matiasbadano.libreriaLour.domain.usuarios;
 
+import com.matiasbadano.libreriaLour.domain.carrito.Carrito;
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -15,6 +17,10 @@ public class Usuario {
     private String email;
 
     private String password;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<String> roles;
+    @OneToOne(mappedBy = "usuario")
+    private Carrito carrito;
 
     public String getPassword() {
         return password;
@@ -48,7 +54,18 @@ public class Usuario {
         this.password = password;
     }
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Set<String> roles;
+    public Usuario() {
+        this.roles = new HashSet<>();
+    }
+
+    // ...
+
+    public Carrito getCarrito() {
+        return carrito;
+    }
+
+    public void setCarrito(Carrito carrito) {
+        this.carrito = carrito;
+    }
 
 }
