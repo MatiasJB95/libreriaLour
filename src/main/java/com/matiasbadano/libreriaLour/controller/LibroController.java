@@ -46,7 +46,6 @@ public class LibroController {
             libroExistente.setTitulo(libroActualizado.getTitulo());
             libroExistente.setAutor(libroActualizado.getAutor());
             libroExistente.setEditorial(libroActualizado.getEditorial());
-            // Actualiza otros atributos según sea necesario
 
             Libro libroActualizadoEntidad = libroRepository.save(libroExistente);
             return new ResponseEntity<>(libroActualizadoEntidad, HttpStatus.OK);
