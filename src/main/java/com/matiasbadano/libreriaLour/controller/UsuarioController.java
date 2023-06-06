@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/usuarios")
+@RequestMapping("/usuarios")
 public class UsuarioController {
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -52,6 +52,10 @@ public class UsuarioController {
             usuario.setEmail(usuarioActualizado.getEmail());
             usuario.setPassword(usuarioActualizado.getPassword());
             usuario.setRoles(usuarioActualizado.getRoles());
+<<<<<<< HEAD
+=======
+
+>>>>>>> 94caf48a7cdd5709faffbb8f9781228931e98f18
 
             Usuario usuarioActualizadoU = usuarioRepository.save(usuario);
             return new ResponseEntity<>(usuarioActualizadoU, HttpStatus.OK);
