@@ -1,10 +1,8 @@
-package com.matiasbadano.libreriaLour.domain;
+package com.matiasbadano.libreriaLour.domain.libros;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.matiasbadano.libreriaLour.domain.categoria.Categoria;
+import jakarta.persistence.*;
 
 @Entity
 public class Libro {
@@ -15,8 +13,9 @@ public class Libro {
     private String titulo;
     private String autor;
     private String editorial;
-
-
+    @ManyToOne
+    @JoinColumn(name = "categoria_id")
+    private Categoria categoria;
     public Libro() {
     }
 
