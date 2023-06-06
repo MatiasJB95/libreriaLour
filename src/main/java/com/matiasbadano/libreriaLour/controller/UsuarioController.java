@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/usuarios")
+@RequestMapping("/usuarios")
 public class UsuarioController {
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -48,7 +48,7 @@ public class UsuarioController {
             usuario.setEmail(usuarioActualizado.getEmail());
             usuario.setPassword(usuarioActualizado.getPassword());
             usuario.setRoles(usuarioActualizado.getRoles());
-            // Actualizar otros campos según sea necesario
+
 
             Usuario usuarioActualizado = usuarioRepository.save(usuario);
             return new ResponseEntity<>(usuarioActualizado, HttpStatus.OK);
