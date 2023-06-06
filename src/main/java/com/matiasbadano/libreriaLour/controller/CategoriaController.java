@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/categorias")
+@RequestMapping("/categorias")
 public class CategoriaController {
     @Autowired
     private CategoriaRepository categoriaRepository;
@@ -45,7 +45,6 @@ public class CategoriaController {
         if (optionalCategoria.isPresent()) {
             Categoria categoria = optionalCategoria.get();
             categoria.setNombre(categoriaActualizada.getNombre());
-            // Actualizar otros campos según sea necesario
 
             Categoria categoriaActualizadaEntity = categoriaRepository.save(categoria);
             return new ResponseEntity<>(categoriaActualizadaEntity, HttpStatus.OK);
