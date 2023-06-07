@@ -1,4 +1,4 @@
-package com.matiasbadano.libreriaLour.controller;
+package com.matiasbadano.libreriaLour.domain.carrito;
 
 import com.matiasbadano.libreriaLour.domain.carrito.Carrito;
 import com.matiasbadano.libreriaLour.domain.carrito.CarritoRepository;

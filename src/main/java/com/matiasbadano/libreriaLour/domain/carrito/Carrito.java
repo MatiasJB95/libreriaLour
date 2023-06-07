@@ -48,4 +48,7 @@ public class Carrito {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
+    public double calcularTotal() {
+        return libros.stream().mapToDouble(Libro::getPrecio).sum();
+    }
 }

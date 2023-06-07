@@ -13,6 +13,8 @@ public class Libro {
     private String titulo;
     private String autor;
     private String editorial;
+    private double precio;
+    private boolean destacado;
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
@@ -28,6 +30,22 @@ public class Libro {
     // Getters y Setters
     public Long getId() {
         return id;
+    }
+
+    public double getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(double precio) {
+        this.precio = precio;
+    }
+
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
     }
 
     public void setId(Long id) {
@@ -56,6 +74,13 @@ public class Libro {
 
     public void setEditorial(String editorial) {
         this.editorial = editorial;
+    }
+    public boolean isDestacado() {
+        return destacado;
+    }
+
+    public void setDestacado(boolean destacado) {
+        this.destacado = destacado;
     }
 
 }

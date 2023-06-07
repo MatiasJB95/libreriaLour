@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface LibroRepository extends JpaRepository<Libro, Long> {
     List<Libro> findByCategoria(Categoria categoria);
+
+    List<Libro> findByDestacado(boolean destacado);
 }

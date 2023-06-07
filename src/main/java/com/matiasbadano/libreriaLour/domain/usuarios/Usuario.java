@@ -55,12 +55,14 @@ public class Usuario {
     }
 
     public Usuario() {
+
         this.roles = new HashSet<>();
     }
 
     // ...
 
-    public Carrito getCarrito() {
+    public Carrito getCarrito()
+    {
         return carrito;
     }
 

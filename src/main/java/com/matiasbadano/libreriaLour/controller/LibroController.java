@@ -3,6 +3,7 @@ import com.matiasbadano.libreriaLour.domain.categoria.Categoria;
 import com.matiasbadano.libreriaLour.domain.categoria.CategoriaRepository;
 import com.matiasbadano.libreriaLour.domain.libros.Libro;
 import com.matiasbadano.libreriaLour.domain.libros.LibroRepository;
+import com.matiasbadano.libreriaLour.domain.libros.LibroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ public class LibroController {
     @Autowired
     private LibroRepository libroRepository;
     private CategoriaRepository categoriaRepository;
+    private LibroService libroService;
 
     @GetMapping
     public ResponseEntity<List<Libro>> obtenerTodosLosLibros() {
@@ -65,7 +67,7 @@ public class LibroController {
         }
 
     }
-    @GetMapping("/libros/{categoriaId}")
+    @GetMapping("/{categoriaId}")
     public ResponseEntity<List<Libro>> obtenerLibrosPorCategoria(@PathVariable("categoriaId") Long categoriaId) {
         Categoria categoria = categoriaRepository.findById(categoriaId).orElse(null);
         if (categoria != null) {
@@ -75,6 +77,12 @@ public class LibroController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    @GetMapping("/destacados")
+    public ResponseEntity<List<Libro>> obtenerLibrosDestacados() {
+        List<Libro> librosDestacados = libroService.obtenerLibrosDestacados();
+        return new ResponseEntity<>(librosDestacados, HttpStatus.OK);
+    }
+
 
 
 }
