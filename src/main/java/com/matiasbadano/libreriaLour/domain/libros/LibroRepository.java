@@ -12,4 +12,6 @@ public interface LibroRepository extends JpaRepository<Libro, Long> {
     List<Libro> findByCategoria(Categoria categoria);
 
     List<Libro> findByDestacado(boolean destacado);
+    List<Libro> findByDestacadoTrue();
+    void deleteById(Long id);
 }

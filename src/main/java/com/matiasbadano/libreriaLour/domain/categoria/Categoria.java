@@ -1,5 +1,6 @@
 package com.matiasbadano.libreriaLour.domain.categoria;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.matiasbadano.libreriaLour.domain.libros.Libro;
 import jakarta.persistence.*;
 
@@ -12,13 +13,14 @@ public class Categoria {
     private Long id;
 
     private String nombre;
+
     @OneToMany(mappedBy = "categoria")
+    @JsonIgnoreProperties("categoria")
     private List<Libro> libros;
 
     public Categoria() {
 
     }
-
     public Categoria(String nombre) {
 
         this.nombre = nombre;
@@ -39,6 +41,13 @@ public class Categoria {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+
+
+    //bucle infinito
+    public List<Libro> getLibros() {
+        return libros;
     }
 
 }

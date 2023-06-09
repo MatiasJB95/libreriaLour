@@ -1,5 +1,6 @@
 package com.matiasbadano.libreriaLour.domain.usuarios;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.matiasbadano.libreriaLour.domain.carrito.Carrito;
 import jakarta.persistence.*;
 
@@ -7,10 +8,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "usuario")
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @JsonManagedReference
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "carrito_id", referencedColumnName = "id")
+    private Carrito carrito;
 
     private String nombre;
 
@@ -19,8 +25,6 @@ public class Usuario {
     private String password;
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> roles;
-    @OneToOne(mappedBy = "usuario")
-    private Carrito carrito;
 
     public String getPassword() {
         return password;
@@ -46,7 +50,7 @@ public class Usuario {
         return roles;
     }
 
-    public void setRoles(Set<String> roles) {
+    public void setRoles() {
         this.roles = roles;
     }
 
@@ -70,4 +74,7 @@ public class Usuario {
         this.carrito = carrito;
     }
 
+
+    public void setId(Long id) {
+    }
 }

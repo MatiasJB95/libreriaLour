@@ -1,6 +1,8 @@
 package com.matiasbadano.libreriaLour.domain.libros;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.matiasbadano.libreriaLour.domain.categoria.Categoria;
 import jakarta.persistence.*;
 
@@ -15,6 +17,7 @@ public class Libro {
     private String editorial;
     private double precio;
     private boolean destacado;
+
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
@@ -39,6 +42,7 @@ public class Libro {
     public void setPrecio(double precio) {
         this.precio = precio;
     }
+
 
     public Categoria getCategoria() {
         return categoria;

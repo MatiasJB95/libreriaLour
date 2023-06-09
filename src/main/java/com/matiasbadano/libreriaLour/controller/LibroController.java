@@ -1,5 +1,4 @@
 package com.matiasbadano.libreriaLour.controller;
-import com.matiasbadano.libreriaLour.domain.categoria.Categoria;
 import com.matiasbadano.libreriaLour.domain.categoria.CategoriaRepository;
 import com.matiasbadano.libreriaLour.domain.libros.Libro;
 import com.matiasbadano.libreriaLour.domain.libros.LibroRepository;
@@ -10,14 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/libros")
 public class LibroController {
-
     @Autowired
     private LibroRepository libroRepository;
-    private CategoriaRepository categoriaRepository;
-    private LibroService libroService;
 
     @GetMapping
     public ResponseEntity<List<Libro>> obtenerTodosLosLibros() {
@@ -26,9 +24,10 @@ public class LibroController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Libro> obtenerLibroPorId(@PathVariable("id") Long id) {
-        Libro libro = libroRepository.findById(id).orElse(null);
-        if (libro != null) {
+    public ResponseEntity<Libro> obtenerLibroPorId(@PathVariable Long id) {
+        Optional<Libro> optionalLibro = libroRepository.findById(id);
+        if (optionalLibro.isPresent()) {
+            Libro libro = optionalLibro.get();
             return new ResponseEntity<>(libro, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -43,46 +42,30 @@ public class LibroController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Libro> actualizarLibro(@PathVariable("id") Long id, @RequestBody Libro libroActualizado) {
-        Libro libroExistente = libroRepository.findById(id).orElse(null);
-        if (libroExistente != null) {
-            libroExistente.setTitulo(libroActualizado.getTitulo());
-            libroExistente.setAutor(libroActualizado.getAutor());
-            libroExistente.setEditorial(libroActualizado.getEditorial());
-
-            Libro libroActualizadoEntidad = libroRepository.save(libroExistente);
-            return new ResponseEntity<>(libroActualizadoEntidad, HttpStatus.OK);
+        Optional<Libro> optionalLibro = libroRepository.findById(id);
+        if (optionalLibro.isPresent()) {
+            Libro libro = optionalLibro.get();
+            libro.setTitulo(libroActualizado.getTitulo());
+            libro.setAutor(libroActualizado.getAutor());
+            libro.setPrecio(libroActualizado.getPrecio());
+            libro.setCategoria(libroActualizado.getCategoria());
+            Libro libroActualizadoEntity = libroRepository.save(libro);
+            return new ResponseEntity<>(libroActualizadoEntity, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarLibro(@PathVariable("id") Long id) {
-        Libro libroExistente = libroRepository.findById(id).orElse(null);
-        if (libroExistente != null) {
-            libroRepository.delete(libroExistente);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<Void> eliminarLibro(@PathVariable Long id) {
+        libroRepository.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 
-    }
-    @GetMapping("/{categoriaId}")
-    public ResponseEntity<List<Libro>> obtenerLibrosPorCategoria(@PathVariable("categoriaId") Long categoriaId) {
-        Categoria categoria = categoriaRepository.findById(categoriaId).orElse(null);
-        if (categoria != null) {
-            List<Libro> libros = libroRepository.findByCategoria(categoria);
-            return new ResponseEntity<>(libros, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
     @GetMapping("/destacados")
     public ResponseEntity<List<Libro>> obtenerLibrosDestacados() {
-        List<Libro> librosDestacados = libroService.obtenerLibrosDestacados();
+        List<Libro> librosDestacados = libroRepository.findByDestacadoTrue();
         return new ResponseEntity<>(librosDestacados, HttpStatus.OK);
     }
-
-
-
 }
+

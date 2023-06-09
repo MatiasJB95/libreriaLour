@@ -2,6 +2,7 @@ package com.matiasbadano.libreriaLour.controller;
 
 import com.matiasbadano.libreriaLour.domain.categoria.Categoria;
 import com.matiasbadano.libreriaLour.domain.categoria.CategoriaRepository;
+import com.matiasbadano.libreriaLour.domain.libros.Libro;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,6 +60,17 @@ public class CategoriaController {
         if (optionalCategoria.isPresent()) {
             categoriaRepository.deleteById(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @GetMapping("/{id}/libros")
+    public ResponseEntity<List<Libro>> obtenerLibrosPorCategoria(@PathVariable("id") Long id) {
+        Optional<Categoria> optionalCategoria = categoriaRepository.findById(id);
+        if (optionalCategoria.isPresent()) {
+            Categoria categoria = optionalCategoria.get();
+            List<Libro> libros = categoria.getLibros();
+            return new ResponseEntity<>(libros, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
