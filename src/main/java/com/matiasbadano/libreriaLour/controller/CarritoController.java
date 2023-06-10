@@ -1,8 +1,5 @@
 package com.matiasbadano.libreriaLour.controller;
-import com.matiasbadano.libreriaLour.domain.carrito.Carrito;
-import com.matiasbadano.libreriaLour.domain.carrito.CarritoDTO;
-import com.matiasbadano.libreriaLour.domain.carrito.CarritoItem;
-import com.matiasbadano.libreriaLour.domain.carrito.CarritoService;
+import com.matiasbadano.libreriaLour.domain.carrito.*;
 import com.matiasbadano.libreriaLour.domain.libros.Libro;
 import com.matiasbadano.libreriaLour.domain.libros.LibroService;
 import jakarta.transaction.Transactional;
@@ -11,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,15 +31,45 @@ public class CarritoController {
     }
 
     @GetMapping("/{id}/productos")
-    public ResponseEntity<List<CarritoDTO>> obtenerProductosEnCarrito(@PathVariable Long id) {
+    public ResponseEntity<CarritoResponseDTO> obtenerProductosEnCarrito(@PathVariable Long id) {
         Carrito carrito = carritoService.obtenerCarritoPorId(id);
         List<Libro> productosEnCarrito = carritoService.obtenerProductosEnCarrito(carrito);
 
         List<CarritoDTO> productosEnCarritoDTO = productosEnCarrito.stream()
-                .map(CarritoDTO::fromLibro)
+                .map(this::mapToCarritoDTO)
                 .collect(Collectors.toList());
 
-        return new ResponseEntity<>(productosEnCarritoDTO, HttpStatus.OK);
+        double total = productosEnCarritoDTO.stream()
+                .mapToDouble(CarritoDTO::getPrecio)
+                .sum();
+
+        CarritoResponseDTO responseDTO = new CarritoResponseDTO();
+        responseDTO.setProductos(productosEnCarritoDTO);
+        responseDTO.setTotal(total);
+
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    private CarritoDTO mapToCarritoDTO(Libro libro) {
+        CarritoDTO carritoDTO = new CarritoDTO();
+        carritoDTO.setId(libro.getId());
+        carritoDTO.setTitulo(libro.getTitulo());
+        carritoDTO.setAutor(libro.getAutor());
+        carritoDTO.setEditorial(libro.getEditorial());
+        carritoDTO.setPrecio(libro.getPrecio());
+        carritoDTO.setCategoria(libro.getCategoriaDTO());
+        return carritoDTO;
+    }
+
+    private CarritoItemDTO mapToCarritoItemDTO(Libro libro) {
+        CarritoItemDTO carritoItemDTO = new CarritoItemDTO();
+        carritoItemDTO.setId(libro.getId());
+        carritoItemDTO.setTitulo(libro.getTitulo());
+        carritoItemDTO.setAutor(libro.getAutor());
+        carritoItemDTO.setEditorial(libro.getEditorial());
+        carritoItemDTO.setPrecio(libro.getPrecio());
+        carritoItemDTO.setCategoria(libro.getCategoriaDTO());
+        return carritoItemDTO;
     }
 
     @PostMapping("/{id}/agregar")
