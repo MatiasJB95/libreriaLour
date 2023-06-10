@@ -1,28 +1,38 @@
 package com.matiasbadano.libreriaLour.controller;
+import com.matiasbadano.libreriaLour.domain.categoria.Categoria;
+import com.matiasbadano.libreriaLour.domain.categoria.CategoriaDTO;
 import com.matiasbadano.libreriaLour.domain.categoria.CategoriaRepository;
 import com.matiasbadano.libreriaLour.domain.libros.Libro;
+import com.matiasbadano.libreriaLour.domain.libros.LibroDTO;
+import com.matiasbadano.libreriaLour.domain.libros.LibroDestacadoDTO;
 import com.matiasbadano.libreriaLour.domain.libros.LibroRepository;
-import com.matiasbadano.libreriaLour.domain.libros.LibroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/libros")
 public class LibroController {
     @Autowired
     private LibroRepository libroRepository;
+    private Categoria categoria;
+    private CategoriaRepository categoriaRepository;
+
 
     @GetMapping
-    public ResponseEntity<List<Libro>> obtenerTodosLosLibros() {
+    public ResponseEntity<List<LibroDTO>> obtenerTodosLosLibros() {
         List<Libro> libros = libroRepository.findAll();
-        return new ResponseEntity<>(libros, HttpStatus.OK);
+        List<LibroDTO> librosDTO = libros.stream()
+                .map(this::convertirADTO)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(librosDTO, HttpStatus.OK);
     }
-
     @GetMapping("/{id}")
     public ResponseEntity<Libro> obtenerLibroPorId(@PathVariable Long id) {
         Optional<Libro> optionalLibro = libroRepository.findById(id);
@@ -37,6 +47,8 @@ public class LibroController {
     @PostMapping
     public ResponseEntity<Libro> crearLibro(@RequestBody Libro libro) {
         Libro nuevoLibro = libroRepository.save(libro);
+        libro.setCategoria(categoria);
+        LibroDTO nuevoLibroDTO = convertirADTO(nuevoLibro);
         return new ResponseEntity<>(nuevoLibro, HttpStatus.CREATED);
     }
 
@@ -63,9 +75,52 @@ public class LibroController {
     }
 
     @GetMapping("/destacados")
-    public ResponseEntity<List<Libro>> obtenerLibrosDestacados() {
+    public ResponseEntity<List<LibroDestacadoDTO>> obtenerLibrosDestacados() {
         List<Libro> librosDestacados = libroRepository.findByDestacadoTrue();
-        return new ResponseEntity<>(librosDestacados, HttpStatus.OK);
-    }
-}
+        List<LibroDestacadoDTO> librosDestacadosDTO = new ArrayList<>();
 
+        for (Libro libro : librosDestacados) {
+            LibroDestacadoDTO libroDestacadoDTO = new LibroDestacadoDTO();
+            libroDestacadoDTO.setId(libro.getId());
+            libroDestacadoDTO.setTitulo(libro.getTitulo());
+            libroDestacadoDTO.setAutor(libro.getAutor());
+            libroDestacadoDTO.setEditorial(libro.getEditorial());
+            libroDestacadoDTO.setPrecio(libro.getPrecio());
+            libroDestacadoDTO.setDestacado(libro.isDestacado());
+            libroDestacadoDTO.setCategoria(CategoriaDTO.fromCategoria(libro.getCategoria()));
+
+            librosDestacadosDTO.add(libroDestacadoDTO);
+        }
+
+        return new ResponseEntity<>(librosDestacadosDTO, HttpStatus.OK);
+    }
+    private LibroDTO convertirADTO(Libro libro) {
+        Categoria categoria = libro.getCategoria();
+        return new LibroDTO(
+                libro.getId(),
+                libro.getTitulo(),
+                libro.getAutor(),
+                libro.getEditorial(),
+                libro.getPrecio(),
+                libro.isDestacado(),
+               libro.getCategoriaDTO()
+        );
+    }
+
+    private Libro convertirADominio(LibroDTO libroDTO) {
+        Libro libro = new Libro();
+        libro.setTitulo(libroDTO.getTitulo());
+        libro.setAutor(libroDTO.getAutor());
+        libro.setEditorial(libroDTO.getEditorial());
+        libro.setPrecio(libroDTO.getPrecio());
+        libro.setDestacado(libroDTO.isDestacado());
+
+        Categoria categoria = categoriaRepository.findById(libroDTO.getCategoria().getId())
+                .orElseThrow(() -> new IllegalArgumentException("ID de categoría inválido"));
+        libro.setCategoria(categoria);
+
+        return libro;
+    }
+
+
+}

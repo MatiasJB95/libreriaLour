@@ -4,6 +4,8 @@ package com.matiasbadano.libreriaLour.domain.libros;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.matiasbadano.libreriaLour.domain.categoria.Categoria;
+import com.matiasbadano.libreriaLour.domain.categoria.CategoriaDTO;
+import com.matiasbadano.libreriaLour.domain.categoria.CategoriaRepository;
 import jakarta.persistence.*;
 
 @Entity
@@ -24,10 +26,11 @@ public class Libro {
     public Libro() {
     }
 
-    public Libro(String titulo, String autor, String editorial) {
+    public Libro(String titulo, String autor, String editorial, Categoria categoria) {
         this.titulo = titulo;
         this.autor = autor;
         this.editorial = editorial;
+        this.categoria = categoria;
     }
 
     // Getters y Setters
@@ -87,4 +90,12 @@ public class Libro {
         this.destacado = destacado;
     }
 
+    public CategoriaDTO getCategoriaDTO() {
+        Categoria categoria = this.categoria;
+        if (categoria == null) {
+            return null;
+        }
+
+        return new CategoriaDTO(categoria.getId(), categoria.getNombre());
+    }
 }

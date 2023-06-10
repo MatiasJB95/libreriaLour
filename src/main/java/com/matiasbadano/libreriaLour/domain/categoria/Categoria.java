@@ -1,6 +1,8 @@
 package com.matiasbadano.libreriaLour.domain.categoria;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.matiasbadano.libreriaLour.domain.libros.Libro;
 import jakarta.persistence.*;
 
@@ -10,7 +12,7 @@ import java.util.List;
 public class Categoria {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     private String nombre;
 
@@ -21,17 +23,17 @@ public class Categoria {
     public Categoria() {
 
     }
-    public Categoria(String nombre) {
 
-        this.nombre = nombre;
+    @JsonCreator
+    public Categoria(@JsonProperty("id") int id) {
+        this.id = id;
     }
 
-
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -43,11 +45,7 @@ public class Categoria {
         this.nombre = nombre;
     }
 
-
-
-    //bucle infinito
     public List<Libro> getLibros() {
         return libros;
     }
-
 }
