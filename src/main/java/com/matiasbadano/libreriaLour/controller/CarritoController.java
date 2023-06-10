@@ -1,5 +1,6 @@
 package com.matiasbadano.libreriaLour.controller;
 import com.matiasbadano.libreriaLour.domain.carrito.Carrito;
+import com.matiasbadano.libreriaLour.domain.carrito.CarritoDTO;
 import com.matiasbadano.libreriaLour.domain.carrito.CarritoItem;
 import com.matiasbadano.libreriaLour.domain.carrito.CarritoService;
 import com.matiasbadano.libreriaLour.domain.libros.Libro;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/carrito")
@@ -30,10 +32,15 @@ public class CarritoController {
     }
 
     @GetMapping("/{id}/productos")
-    public ResponseEntity<List<Libro>> obtenerProductosEnCarrito(@PathVariable Long id) {
+    public ResponseEntity<List<CarritoDTO>> obtenerProductosEnCarrito(@PathVariable Long id) {
         Carrito carrito = carritoService.obtenerCarritoPorId(id);
         List<Libro> productosEnCarrito = carritoService.obtenerProductosEnCarrito(carrito);
-        return new ResponseEntity<>(productosEnCarrito, HttpStatus.OK);
+
+        List<CarritoDTO> productosEnCarritoDTO = productosEnCarrito.stream()
+                .map(CarritoDTO::fromLibro)
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(productosEnCarritoDTO, HttpStatus.OK);
     }
 
     @PostMapping("/{id}/agregar")

@@ -1,25 +1,28 @@
 package com.matiasbadano.libreriaLour.domain.categoria;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CategoriaDTO {
-    private long id;
+
+    private Long id;
     private String nombre;
 
     public CategoriaDTO() {
     }
 
-    public CategoriaDTO(int id, String nombre) {
+    public CategoriaDTO(long id, String nombre) {
         this.id = id;
         this.nombre = nombre;
     }
 
     // Getters y setters
 
-
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -35,4 +38,3 @@ public class CategoriaDTO {
         return new CategoriaDTO(categoria.getId(), categoria.getNombre());
     }
 }
-

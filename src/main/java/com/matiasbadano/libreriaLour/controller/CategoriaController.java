@@ -1,6 +1,7 @@
 package com.matiasbadano.libreriaLour.controller;
 
 import com.matiasbadano.libreriaLour.domain.categoria.Categoria;
+import com.matiasbadano.libreriaLour.domain.categoria.CategoriaDTO;
 import com.matiasbadano.libreriaLour.domain.categoria.CategoriaRepository;
 import com.matiasbadano.libreriaLour.domain.libros.Libro;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/categorias")
@@ -18,9 +20,12 @@ public class CategoriaController {
     private CategoriaRepository categoriaRepository;
 
     @GetMapping
-    public ResponseEntity<List<Categoria>> obtenerTodasLasCategorias() {
+    public ResponseEntity<List<CategoriaDTO>> obtenerTodasLasCategorias() {
         List<Categoria> categorias = categoriaRepository.findAll();
-        return new ResponseEntity<>(categorias, HttpStatus.OK);
+        List<CategoriaDTO> categoriasDTO = categorias.stream()
+                .map(categoria -> new CategoriaDTO(categoria.getId(), categoria.getNombre()))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(categoriasDTO, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

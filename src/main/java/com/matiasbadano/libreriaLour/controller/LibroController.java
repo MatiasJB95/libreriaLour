@@ -22,6 +22,7 @@ public class LibroController {
     @Autowired
     private LibroRepository libroRepository;
     private Categoria categoria;
+    @Autowired
     private CategoriaRepository categoriaRepository;
 
 
@@ -29,10 +30,11 @@ public class LibroController {
     public ResponseEntity<List<LibroDTO>> obtenerTodosLosLibros() {
         List<Libro> libros = libroRepository.findAll();
         List<LibroDTO> librosDTO = libros.stream()
-                .map(this::convertirADTO)
+                .map(LibroDTO::fromLibro)
                 .collect(Collectors.toList());
         return new ResponseEntity<>(librosDTO, HttpStatus.OK);
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<Libro> obtenerLibroPorId(@PathVariable Long id) {
         Optional<Libro> optionalLibro = libroRepository.findById(id);
@@ -60,7 +62,12 @@ public class LibroController {
             libro.setTitulo(libroActualizado.getTitulo());
             libro.setAutor(libroActualizado.getAutor());
             libro.setPrecio(libroActualizado.getPrecio());
-            libro.setCategoria(libroActualizado.getCategoria());
+
+            Long categoriaId = (long) libroActualizado.getCategoria().getId();
+            Categoria categoria = categoriaRepository.findById(categoriaId)
+                    .orElseThrow(() -> new IllegalArgumentException("ID de categoría inválido"));
+            libro.setCategoria(categoria);
+
             Libro libroActualizadoEntity = libroRepository.save(libro);
             return new ResponseEntity<>(libroActualizadoEntity, HttpStatus.OK);
         } else {
@@ -81,19 +88,21 @@ public class LibroController {
 
         for (Libro libro : librosDestacados) {
             LibroDestacadoDTO libroDestacadoDTO = new LibroDestacadoDTO();
-            libroDestacadoDTO.setId(libro.getId());
             libroDestacadoDTO.setTitulo(libro.getTitulo());
             libroDestacadoDTO.setAutor(libro.getAutor());
             libroDestacadoDTO.setEditorial(libro.getEditorial());
             libroDestacadoDTO.setPrecio(libro.getPrecio());
-            libroDestacadoDTO.setDestacado(libro.isDestacado());
-            libroDestacadoDTO.setCategoria(CategoriaDTO.fromCategoria(libro.getCategoria()));
+
+            CategoriaDTO categoriaDTO = new CategoriaDTO();
+            categoriaDTO.setNombre(libro.getCategoria().getNombre());
+            libroDestacadoDTO.setCategoria(categoriaDTO);
 
             librosDestacadosDTO.add(libroDestacadoDTO);
         }
 
         return new ResponseEntity<>(librosDestacadosDTO, HttpStatus.OK);
     }
+
     private LibroDTO convertirADTO(Libro libro) {
         Categoria categoria = libro.getCategoria();
         return new LibroDTO(
@@ -102,8 +111,7 @@ public class LibroController {
                 libro.getAutor(),
                 libro.getEditorial(),
                 libro.getPrecio(),
-                libro.isDestacado(),
-               libro.getCategoriaDTO()
+                libro.getCategoriaDTO()
         );
     }
 
@@ -113,7 +121,6 @@ public class LibroController {
         libro.setAutor(libroDTO.getAutor());
         libro.setEditorial(libroDTO.getEditorial());
         libro.setPrecio(libroDTO.getPrecio());
-        libro.setDestacado(libroDTO.isDestacado());
 
         Categoria categoria = categoriaRepository.findById(libroDTO.getCategoria().getId())
                 .orElseThrow(() -> new IllegalArgumentException("ID de categoría inválido"));
@@ -121,6 +128,4 @@ public class LibroController {
 
         return libro;
     }
-
-
 }

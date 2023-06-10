@@ -1,25 +1,24 @@
-package com.matiasbadano.libreriaLour.domain.libros;
+package com.matiasbadano.libreriaLour.domain.carrito;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.matiasbadano.libreriaLour.domain.categoria.CategoriaDTO;
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class LibroDestacadoDTO {
-    private Integer id;
+import com.matiasbadano.libreriaLour.domain.libros.Libro;
+
+public class CarritoDTO {
+    private Long id;
     private String titulo;
     private String autor;
-    private String editorial;
-    private Double precio;
-    private Boolean destacado;
-    private CategoriaDTO categoria;
 
-
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
+
+    private String editorial;
+    private Double precio;
+    private CategoriaDTO categoria;
 
     public String getTitulo() {
         return titulo;
@@ -53,19 +52,22 @@ public class LibroDestacadoDTO {
         this.precio = precio;
     }
 
-    public Boolean getDestacado() {
-        return destacado;
-    }
-
-    public void setDestacado(Boolean destacado) {
-        this.destacado = destacado;
-    }
-
     public CategoriaDTO getCategoria() {
         return categoria;
     }
 
     public void setCategoria(CategoriaDTO categoria) {
         this.categoria = categoria;
+    }
+
+    public static CarritoDTO fromLibro(Libro libro) {
+        CarritoDTO libroCarritoDTO = new CarritoDTO();
+        libroCarritoDTO.setId(libro.getId());
+        libroCarritoDTO.setTitulo(libro.getTitulo());
+        libroCarritoDTO.setAutor(libro.getAutor());
+        libroCarritoDTO.setEditorial(libro.getEditorial());
+        libroCarritoDTO.setPrecio(libro.getPrecio());
+        libroCarritoDTO.setCategoria(CategoriaDTO.fromCategoria(libro.getCategoria()));
+        return libroCarritoDTO;
     }
 }

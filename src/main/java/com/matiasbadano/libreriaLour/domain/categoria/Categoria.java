@@ -1,6 +1,7 @@
 package com.matiasbadano.libreriaLour.domain.categoria;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.matiasbadano.libreriaLour.domain.libros.Libro;
@@ -18,14 +19,14 @@ public class Categoria {
 
     @OneToMany(mappedBy = "categoria")
     @JsonIgnoreProperties("categoria")
+    @JsonIgnore
     private List<Libro> libros;
 
     public Categoria() {
 
     }
 
-    @JsonCreator
-    public Categoria(@JsonProperty("id") int id) {
+    public Categoria(int id) {
         this.id = id;
     }
 
