@@ -22,6 +22,7 @@ public class Carrito {
     private Usuario usuario;
     @JsonManagedReference
     @OneToMany(mappedBy = "carrito", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<CarritoItem> carritoItems;
 
     public Carrito() {
@@ -55,4 +56,5 @@ public class Carrito {
         carritoItems.remove(carritoItem);
         carritoItem.setCarrito(null);
     }
+
 }

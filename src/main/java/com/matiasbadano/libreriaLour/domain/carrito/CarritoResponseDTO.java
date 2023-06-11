@@ -3,14 +3,17 @@ package com.matiasbadano.libreriaLour.domain.carrito;
 import java.util.List;
 
 public class CarritoResponseDTO {
-    private List<CarritoDTO> productos;
+    private List<CarritoItemDTO> productos;
     private Double total;
 
-    public List<CarritoDTO> getProductos() {
+
+
+
+    public List<CarritoItemDTO> getProductos() {
         return productos;
     }
 
-    public void setProductos(List<CarritoDTO> productos) {
+    public void setProductos(List<CarritoItemDTO> productos) {
         this.productos = productos;
     }
 
@@ -21,4 +24,5 @@ public class CarritoResponseDTO {
     public void setTotal(Double total) {
         this.total = total;
     }
+
 }

@@ -22,6 +22,15 @@ public class CarritoDTO {
     private String editorial;
     private Double precio;
     private CategoriaDTO categoria;
+    private int cantidad;
+
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
+    }
 
     public String getTitulo() {
         return titulo;

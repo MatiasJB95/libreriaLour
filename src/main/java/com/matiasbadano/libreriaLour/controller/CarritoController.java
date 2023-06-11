@@ -1,27 +1,33 @@
 package com.matiasbadano.libreriaLour.controller;
 import com.matiasbadano.libreriaLour.domain.carrito.*;
 import com.matiasbadano.libreriaLour.domain.libros.Libro;
+import com.matiasbadano.libreriaLour.domain.libros.LibroRepository;
 import com.matiasbadano.libreriaLour.domain.libros.LibroService;
+import com.matiasbadano.libreriaLour.infra.errores.LibroNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/carrito")
 public class CarritoController {
     private final CarritoService carritoService;
+    private final LibroService libroService;
+    private final LibroRepository libroRepository;
+    private CarritoRepository carritoRepository;
+    private CarritoItemRepository carritoItemRepository;
 
     @Autowired
-    public CarritoController(CarritoService carritoService) {
+    public CarritoController(CarritoService carritoService, LibroService libroService, LibroRepository libroRepository, CarritoRepository carritoRepository) {
         this.carritoService = carritoService;
+        this.libroService = libroService;
+        this.libroRepository = libroRepository;
+        this.carritoRepository = carritoRepository;
     }
 
     @GetMapping("/{id}")
@@ -33,18 +39,13 @@ public class CarritoController {
     @GetMapping("/{id}/productos")
     public ResponseEntity<CarritoResponseDTO> obtenerProductosEnCarrito(@PathVariable Long id) {
         Carrito carrito = carritoService.obtenerCarritoPorId(id);
-        List<Libro> productosEnCarrito = carritoService.obtenerProductosEnCarrito(carrito);
+        List<CarritoItemDTO> productosEnCarrito = carritoService.obtenerProductosEnCarrito(carrito);
 
-        List<CarritoDTO> productosEnCarritoDTO = productosEnCarrito.stream()
-                .map(this::mapToCarritoDTO)
-                .collect(Collectors.toList());
-
-        double total = productosEnCarritoDTO.stream()
-                .mapToDouble(CarritoDTO::getPrecio)
+        double total = productosEnCarrito.stream()
+                .mapToDouble(carritoItemDTO -> carritoItemDTO.getPrecio() * carritoItemDTO.getCantidad())
                 .sum();
-
         CarritoResponseDTO responseDTO = new CarritoResponseDTO();
-        responseDTO.setProductos(productosEnCarritoDTO);
+        responseDTO.setProductos(productosEnCarrito);
         responseDTO.setTotal(total);
 
         return ResponseEntity.ok(responseDTO);
@@ -75,18 +76,17 @@ public class CarritoController {
     @PostMapping("/{id}/agregar")
     public ResponseEntity<Void> agregarAlCarrito(@PathVariable Long id, @RequestBody Map<String, Object> requestBody) {
         Long libroId = Long.parseLong(requestBody.get("libroId").toString());
-        int cantidad = Integer.parseInt(requestBody.get("cantidad").toString());
+        Integer cantidad = requestBody.get("cantidad") != null ? Integer.parseInt(requestBody.get("cantidad").toString()) : null;
         Carrito carrito = carritoService.obtenerCarritoPorId(id);
         carritoService.agregarAlCarrito(carrito, libroId, cantidad);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
-
     @DeleteMapping("/{id}/eliminar")
     public ResponseEntity<Void> eliminarDelCarrito(@PathVariable Long id, @RequestBody Map<String, Object> requestBody) {
         Long libroId = Long.parseLong(requestBody.get("libroId").toString());
         int cantidad = Integer.parseInt(requestBody.get("cantidad").toString());
         Carrito carrito = carritoService.obtenerCarritoPorId(id);
-        carritoService.eliminarDelCarrito(carrito, libroId);
+        carritoService.eliminarDelCarrito(carrito, libroId, cantidad);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

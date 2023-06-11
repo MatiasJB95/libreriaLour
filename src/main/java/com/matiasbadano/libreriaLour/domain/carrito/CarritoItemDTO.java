@@ -6,6 +6,22 @@ public class CarritoItemDTO {
     private Long id;
     private String titulo;
     private String autor;
+    private String editorial;
+    private double precio;
+    private CategoriaDTO categoria;
+    private int cantidad;
+
+    public void setPrecio(double precio) {
+        this.precio = precio;
+    }
+
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
+    }
 
     public Long getId() {
         return id;
@@ -55,9 +71,7 @@ public class CarritoItemDTO {
         this.categoria = categoria;
     }
 
-    private String editorial;
-    private Double precio;
-    private CategoriaDTO categoria;
+
 
 
 }

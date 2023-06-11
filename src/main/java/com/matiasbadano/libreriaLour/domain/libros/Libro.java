@@ -3,12 +3,16 @@ package com.matiasbadano.libreriaLour.domain.libros;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.matiasbadano.libreriaLour.domain.carrito.CarritoItem;
 import com.matiasbadano.libreriaLour.domain.categoria.Categoria;
 import com.matiasbadano.libreriaLour.domain.categoria.CategoriaDTO;
 import com.matiasbadano.libreriaLour.domain.categoria.CategoriaRepository;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
+@Table(name = "libro")
 public class Libro {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +27,9 @@ public class Libro {
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
+    @OneToMany(mappedBy = "libro")
+    @JsonIgnore
+    private List<CarritoItem> carritoItems;
     public Libro() {
     }
 
@@ -77,6 +84,14 @@ public class Libro {
 
     public String getEditorial() {
         return editorial;
+    }
+
+    public List<CarritoItem> getCarritoItems() {
+        return carritoItems;
+    }
+
+    public void setCarritoItems(List<CarritoItem> carritoItems) {
+        this.carritoItems = carritoItems;
     }
 
     public void setEditorial(String editorial) {

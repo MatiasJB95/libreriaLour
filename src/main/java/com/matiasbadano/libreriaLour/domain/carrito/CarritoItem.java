@@ -30,6 +30,9 @@ public class CarritoItem {
         this.cantidad = cantidad;
     }
 
+    public CarritoItem(Optional<Libro> libro, int cantidad) {
+    }
+
     public Long getId() {
         return id;
     }
