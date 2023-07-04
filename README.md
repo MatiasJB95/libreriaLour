@@ -1,6 +1,6 @@
 # Tienda de Libros API REST en Java con Spring Boot
 
-Esta API REST en Java con Spring Boot es una tienda de libros que permite realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) en libros y categorías, así como administrar un carrito de compras. También incluye una vista de destacados que muestra una lista de libros destacados u en oferta.
+Esta API REST en Java con Spring Boot es una tienda de libros que permite realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) en libros y categorías, así como administrar un carrito de compras. También incluye una vista de destacados que muestra una lista de libros destacados y/o en oferta.
 
 ## Funcionalidades
 
