@@ -2,18 +2,6 @@
 
 Esta API REST en Java con Spring Boot es una tienda de libros que permite realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) en libros y categorías, así como administrar un carrito de compras. También incluye una vista de destacados que muestra una lista de libros destacados y/o en oferta.
 
-## Funcionalidades
-
-- Creación de libros: Permite agregar nuevos libros a la base de datos especificando su título, autor, editorial, precio y categoría.
-- Actualización de libros: Permite actualizar la información de un libro existente, como su título, autor, editorial y precio.
-- Eliminación de libros: Permite eliminar un libro de la base de datos según su ID.
-- Consulta de libros: Permite obtener información detallada de un libro específico o de todos los libros disponibles.
-- Creación de categorías: Permite agregar nuevas categorías de libros a la base de datos.
-- Consulta de categorías: Permite obtener información de todas las categorías disponibles.
-- Filtrado de libros por categoría: Permite obtener una lista de libros que pertenecen a una categoría específica.
-- Administración del carrito de compras: Permite agregar productos al carrito, eliminar productos del carrito en cantidad y calcular el costo total de los productos en el carrito.
-- Vista de destacados: Permite mostrar una lista de libros destacados o en oferta.
-
 ## Tecnologías y habilidades utilizadas
 
 - Java: Lenguaje de programación principal utilizado en el desarrollo de la API REST.
